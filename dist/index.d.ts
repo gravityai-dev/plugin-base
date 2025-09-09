@@ -116,4 +116,5 @@ export declare function createPlugin(config: {
  * Initialize platform dependencies from plugin API
  */
 export declare function initializePlatformFromAPI(api: GravityPluginAPI): void;
+export * from "./credentials";
 //# sourceMappingURL=index.d.ts.map

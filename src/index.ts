@@ -208,3 +208,6 @@ export function initializePlatformFromAPI(api: GravityPluginAPI) {
     ValidationResult: null,
   } as any);
 }
+
+// Export shared credentials
+export * from "./credentials";
