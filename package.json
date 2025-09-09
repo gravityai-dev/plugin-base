@@ -1,0 +1,28 @@
+{
+  "name": "@gravityai-dev/plugin-base",
+  "version": "1.0.6",
+  "description": "Base package for Gravity plugin development",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "gravity",
+    "plugin",
+    "base"
+  ],
+  "author": "Gravity Team",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

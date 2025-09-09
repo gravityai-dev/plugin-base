@@ -1,0 +1,93 @@
+"use strict";
+/**
+ * Unified Plugin Base and Platform Dependencies
+ *
+ * This file combines plugin interfaces with platform dependencies,
+ * eliminating redundancy across plugin packages.
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setPlatformDependencies = setPlatformDependencies;
+exports.getPlatformDependencies = getPlatformDependencies;
+exports.createPlugin = createPlugin;
+exports.initializePlatformFromAPI = initializePlatformFromAPI;
+// Global platform instance
+let platformDeps = null;
+/**
+ * Set platform dependencies (called by plugin setup)
+ */
+function setPlatformDependencies(deps) {
+    platformDeps = deps;
+}
+/**
+ * Get platform dependencies (used by internal code)
+ */
+function getPlatformDependencies() {
+    if (!platformDeps) {
+        // Return working stubs that won't crash at module load
+        return {
+            PromiseNode: class {
+                constructor(name) {
+                    this.nodeType = 'stub';
+                    this.logger = { info: () => { }, error: () => { }, debug: () => { } };
+                }
+                validateConfig(config) { return { success: true }; }
+                executeNode(inputs, config, context) { return {}; }
+                buildCredentialContext(context) { return {}; }
+                validateAndGetContext(context) { return { workflowId: '', executionId: '', nodeId: '' }; }
+            },
+            CallbackNode: class {
+                constructor(name) { }
+            },
+            NodeInputType: {
+                STRING: 'string',
+                OBJECT: 'object',
+                ARRAY: 'array',
+                NUMBER: 'number',
+                BOOLEAN: 'boolean'
+            },
+            NodeConcurrency: {
+                SINGLE: 'single',
+                MULTIPLE: 'multiple'
+            },
+            getNodeCredentials: () => Promise.resolve({}),
+            getConfig: () => ({}),
+            createLogger: () => ({ info: () => { }, error: () => { }, debug: () => { }, warn: () => { } }),
+            saveTokenUsage: () => Promise.resolve(),
+        };
+    }
+    return platformDeps;
+}
+/**
+ * Helper to create a plugin
+ */
+function createPlugin(config) {
+    return config;
+}
+/**
+ * Initialize platform dependencies from plugin API
+ */
+function initializePlatformFromAPI(api) {
+    setPlatformDependencies({
+        // Core dependencies from API
+        PromiseNode: api.classes.PromiseNode,
+        CallbackNode: api.classes.CallbackNode,
+        NodeInputType: api.types.NodeInputType,
+        NodeConcurrency: api.types.NodeConcurrency,
+        getNodeCredentials: api.getNodeCredentials,
+        getConfig: api.getConfig,
+        createLogger: api.createLogger,
+        saveTokenUsage: api.saveTokenUsage,
+        // Type placeholders (not used at runtime)
+        NodeInput: null,
+        NodeOutput: null,
+        NodeDefinition: null,
+        NodeExecutor: null,
+        NodeExecutionContext: null,
+        NodeLifecycle: null,
+        WorkflowNode: null,
+        EnhancedNodeDefinition: null,
+        NodeCredential: null,
+        ValidationResult: null,
+    });
+}
+//# sourceMappingURL=index.js.map
