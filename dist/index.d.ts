@@ -17,7 +17,7 @@ export interface GravityPlugin {
  * API provided by Gravity to plugins
  */
 export interface GravityPluginAPI {
-    registerNode(name: string, node: PluginNodeDefinition): void;
+    registerNode(node: PluginNodeDefinition): void;
     registerService(name: string, service: any): void;
     registerCredential(credential: any): void;
     createLogger(name: string): any;

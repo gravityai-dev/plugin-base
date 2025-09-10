@@ -20,7 +20,7 @@ export interface GravityPlugin {
  */
 export interface GravityPluginAPI {
   // Registration methods
-  registerNode(name: string, node: PluginNodeDefinition): void;
+  registerNode(node: PluginNodeDefinition): void;
   registerService(name: string, service: any): void;
   registerCredential(credential: any): void;
   
