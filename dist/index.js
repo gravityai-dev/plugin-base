@@ -37,8 +37,9 @@ function setPlatformDependencies(deps) {
  */
 function getPlatformDependencies() {
     if (!platformDeps) {
-        // Return working stubs that won't crash at module load
+        // Return stub implementations that won't crash at module load
         return {
+            packageVersion: "1.0.9",
             PromiseNode: class {
                 constructor(name) {
                     this.nodeType = 'stub';
@@ -46,8 +47,17 @@ function getPlatformDependencies() {
                 }
                 validateConfig(config) { return { success: true }; }
                 executeNode(inputs, config, context) { return {}; }
-                buildCredentialContext(context) { return {}; }
                 validateAndGetContext(context) { return { workflowId: '', executionId: '', nodeId: '' }; }
+                getExecutionContext(context) {
+                    return {
+                        workflowId: '',
+                        executionId: '',
+                        nodeId: '',
+                        nodeType: '',
+                        config: {},
+                        credentials: {}
+                    };
+                }
             },
             CallbackNode: class {
                 constructor(name) { }
@@ -104,6 +114,8 @@ function initializePlatformFromAPI(api) {
         ValidationResult: null,
     });
 }
+// Export types
+__exportStar(require("./types"), exports);
 // Export shared credentials
 __exportStar(require("./credentials"), exports);
 //# sourceMappingURL=index.js.map

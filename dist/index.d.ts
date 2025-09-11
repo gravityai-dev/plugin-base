@@ -67,34 +67,6 @@ export type EnhancedNodeDefinition = any;
 export type NodeCredential = any;
 export type NodeConcurrency = any;
 export type ValidationResult = any;
-export interface Logger {
-    info: (...args: any[]) => void;
-    error: (...args: any[]) => void;
-    debug: (...args: any[]) => void;
-    warn?: (...args: any[]) => void;
-}
-export interface TokenUsage {
-    workflowId: string;
-    executionId: string;
-    nodeId: string;
-    nodeType?: string;
-    model: string;
-    promptTokens?: number;
-    completionTokens?: number;
-    totalTokens: number;
-    inputTokens?: number;
-    outputTokens?: number;
-    timestamp?: Date;
-}
-export interface PlatformConfig {
-    openai?: {
-        maxTokens?: number;
-    };
-    REDIS_HOST?: string;
-    REDIS_PORT?: number;
-    REDIS_PASSWORD?: string;
-    REDIS_USERNAME?: string;
-}
 /**
  * Set platform dependencies (called by plugin setup)
  */
@@ -116,5 +88,6 @@ export declare function createPlugin(config: {
  * Initialize platform dependencies from plugin API
  */
 export declare function initializePlatformFromAPI(api: GravityPluginAPI): void;
+export * from "./types";
 export * from "./credentials";
 //# sourceMappingURL=index.d.ts.map

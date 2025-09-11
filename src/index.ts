@@ -88,37 +88,6 @@ export type NodeCredential = any;
 export type NodeConcurrency = any;
 export type ValidationResult = any;
 
-// Additional types used by services
-export interface Logger {
-  info: (...args: any[]) => void;
-  error: (...args: any[]) => void;
-  debug: (...args: any[]) => void;
-  warn?: (...args: any[]) => void;
-}
-
-export interface TokenUsage {
-  workflowId: string;
-  executionId: string;
-  nodeId: string;
-  nodeType?: string;
-  model: string;
-  promptTokens?: number;
-  completionTokens?: number;
-  totalTokens: number;
-  inputTokens?: number;
-  outputTokens?: number;
-  timestamp?: Date;
-}
-
-export interface PlatformConfig {
-  openai?: {
-    maxTokens?: number;
-  };
-  REDIS_HOST?: string;
-  REDIS_PORT?: number;
-  REDIS_PASSWORD?: string;
-  REDIS_USERNAME?: string;
-}
 
 // Global platform instance
 let platformDeps: PlatformDependencies | null = null;
@@ -135,14 +104,24 @@ export function setPlatformDependencies(deps: PlatformDependencies) {
  */
 export function getPlatformDependencies(): PlatformDependencies {
   if (!platformDeps) {
-    // Return working stubs that won't crash at module load
+    // Return stub implementations that won't crash at module load
     return {
+    packageVersion: "1.0.9",
       PromiseNode: class {
         constructor(name: string) {}
         protected validateConfig(config: any) { return { success: true }; }
         protected executeNode(inputs: any, config: any, context: any) { return {}; }
-        protected buildCredentialContext(context: any) { return {}; }
         protected validateAndGetContext(context: any) { return { workflowId: '', executionId: '', nodeId: '' }; }
+        protected getExecutionContext(context: any) { 
+          return { 
+            workflowId: '', 
+            executionId: '', 
+            nodeId: '', 
+            nodeType: '', 
+            config: {}, 
+            credentials: {} 
+          }; 
+        }
         nodeType = 'stub';
         logger = { info: () => {}, error: () => {}, debug: () => {} };
       },
@@ -208,6 +187,9 @@ export function initializePlatformFromAPI(api: GravityPluginAPI) {
     ValidationResult: null,
   } as any);
 }
+
+// Export types
+export * from "./types";
 
 // Export shared credentials
 export * from "./credentials";
