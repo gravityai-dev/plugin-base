@@ -39,7 +39,7 @@ function getPlatformDependencies() {
     if (!platformDeps) {
         // Return stub implementations that won't crash at module load
         return {
-            packageVersion: "1.0.11",
+            packageVersion: "1.0.12",
             PromiseNode: class {
                 constructor(name) {
                     this.nodeType = 'stub';
@@ -77,6 +77,7 @@ function getPlatformDependencies() {
             getConfig: () => ({}),
             createLogger: () => ({ info: () => { }, error: () => { }, debug: () => { }, warn: () => { } }),
             saveTokenUsage: () => Promise.resolve(),
+            getRedisClient: () => null,
         };
     }
     return platformDeps;
@@ -101,6 +102,7 @@ function initializePlatformFromAPI(api) {
         getConfig: api.getConfig,
         createLogger: api.createLogger,
         saveTokenUsage: api.saveTokenUsage,
+        getRedisClient: api.getRedisClient,
         // Type placeholders (not used at runtime)
         NodeInput: null,
         NodeOutput: null,

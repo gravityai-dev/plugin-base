@@ -29,6 +29,7 @@ export interface GravityPluginAPI {
   getConfig(): any;
   saveTokenUsage(usage: any): Promise<void>;
   getNodeCredentials(context: any, credentialName: string): Promise<any>;
+  getRedisClient(): any; // Get shared Redis connection
   
   // Base classes for extending
   classes: {
@@ -69,6 +70,7 @@ export interface PlatformDependencies {
   getConfig: () => any;
   createLogger: (name: string) => any;
   saveTokenUsage: (usage: any) => Promise<void>;
+  getRedisClient: () => any; // Get shared Redis connection
   
   // Allow additional properties for compatibility
   [key: string]: any;
@@ -106,7 +108,7 @@ export function getPlatformDependencies(): PlatformDependencies {
   if (!platformDeps) {
     // Return stub implementations that won't crash at module load
     return {
-    packageVersion: "1.0.11",
+    packageVersion: "1.0.12",
       PromiseNode: class {
         constructor(name: string) {}
         protected validateConfig(config: any) { return { success: true }; }
@@ -143,6 +145,7 @@ export function getPlatformDependencies(): PlatformDependencies {
       getConfig: () => ({}),
       createLogger: () => ({ info: () => {}, error: () => {}, debug: () => {}, warn: () => {} }),
       saveTokenUsage: () => Promise.resolve(),
+      getRedisClient: () => null,
     } as any;
   }
   return platformDeps;
@@ -174,6 +177,7 @@ export function initializePlatformFromAPI(api: GravityPluginAPI) {
     getConfig: api.getConfig,
     createLogger: api.createLogger,
     saveTokenUsage: api.saveTokenUsage,
+    getRedisClient: api.getRedisClient,
     // Type placeholders (not used at runtime)
     NodeInput: null,
     NodeOutput: null,

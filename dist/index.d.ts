@@ -24,6 +24,7 @@ export interface GravityPluginAPI {
     getConfig(): any;
     saveTokenUsage(usage: any): Promise<void>;
     getNodeCredentials(context: any, credentialName: string): Promise<any>;
+    getRedisClient(): any;
     classes: {
         PromiseNode: any;
         CallbackNode: any;
@@ -53,6 +54,7 @@ export interface PlatformDependencies {
     getConfig: () => any;
     createLogger: (name: string) => any;
     saveTokenUsage: (usage: any) => Promise<void>;
+    getRedisClient: () => any;
     [key: string]: any;
 }
 export type NodeInputType = any;
