@@ -1,6 +1,6 @@
 {
   "name": "@gravityai-dev/plugin-base",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Base package for Gravity plugin development",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
