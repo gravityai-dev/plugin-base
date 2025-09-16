@@ -110,7 +110,7 @@ export function getPlatformDependencies(): PlatformDependencies {
   if (!platformDeps) {
     // Return stub implementations that won't crash at module load
     return {
-    packageVersion: "1.0.20",
+    packageVersion: "1.0.21",
       PromiseNode: class {
         constructor(name: string) {}
         protected validateConfig(config: any) { return { success: true }; }
