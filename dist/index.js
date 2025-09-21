@@ -39,7 +39,7 @@ function getPlatformDependencies() {
     if (!platformDeps) {
         // Return stub implementations that won't crash at module load
         return {
-            packageVersion: "1.0.24",
+            packageVersion: "1.0.26",
             PromiseNode: class {
                 constructor(name) {
                     this.nodeType = 'stub';
@@ -77,6 +77,7 @@ function getPlatformDependencies() {
             getConfig: () => ({}),
             createLogger: () => ({ info: () => { }, error: () => { }, debug: () => { }, warn: () => { } }),
             saveTokenUsage: () => Promise.resolve(),
+            callService: () => Promise.resolve(null),
             getRedisClient: () => null,
             gravityPublish: () => Promise.resolve(),
         };
@@ -103,6 +104,7 @@ function initializePlatformFromAPI(api) {
         getConfig: api.getConfig,
         createLogger: api.createLogger,
         saveTokenUsage: api.saveTokenUsage,
+        callService: api.callService,
         getRedisClient: api.getRedisClient,
         gravityPublish: api.gravityPublish,
         // Type placeholders (not used at runtime)

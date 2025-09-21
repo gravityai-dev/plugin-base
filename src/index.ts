@@ -29,6 +29,7 @@ export interface GravityPluginAPI {
   getConfig(): any;
   saveTokenUsage(usage: any): Promise<void>;
   getNodeCredentials(context: any, credentialName: string): Promise<any>;
+  callService(method: string, params: any, context: any): Promise<any>;
   getRedisClient(): any; // For reading from Redis
   gravityPublish(channel: string, message: any): Promise<void>;
   
@@ -71,6 +72,7 @@ export interface PlatformDependencies {
   getConfig: () => any;
   createLogger: (name: string) => any;
   saveTokenUsage: (usage: any) => Promise<void>;
+  callService: (method: string, params: any, context: any) => Promise<any>;
   getRedisClient: () => any; // For reading from Redis
   gravityPublish: (channel: string, message: any) => Promise<void>;
   
@@ -110,7 +112,7 @@ export function getPlatformDependencies(): PlatformDependencies {
   if (!platformDeps) {
     // Return stub implementations that won't crash at module load
     return {
-    packageVersion: "1.0.24",
+    packageVersion: "1.0.26",
       PromiseNode: class {
         constructor(name: string) {}
         protected validateConfig(config: any) { return { success: true }; }
@@ -147,6 +149,7 @@ export function getPlatformDependencies(): PlatformDependencies {
       getConfig: () => ({}),
       createLogger: () => ({ info: () => {}, error: () => {}, debug: () => {}, warn: () => {} }),
       saveTokenUsage: () => Promise.resolve(),
+      callService: () => Promise.resolve(null),
       getRedisClient: () => null,
       gravityPublish: () => Promise.resolve(),
     } as any;
@@ -180,6 +183,7 @@ export function initializePlatformFromAPI(api: GravityPluginAPI) {
     getConfig: api.getConfig,
     createLogger: api.createLogger,
     saveTokenUsage: api.saveTokenUsage,
+    callService: api.callService,
     getRedisClient: api.getRedisClient,
     gravityPublish: api.gravityPublish,
     // Type placeholders (not used at runtime)
