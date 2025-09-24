@@ -107,6 +107,7 @@ function initializePlatformFromAPI(api) {
         callService: api.callService,
         getRedisClient: api.getRedisClient,
         gravityPublish: api.gravityPublish,
+        getAudioWebSocketManager: api.getAudioWebSocketManager,
         // Type placeholders (not used at runtime)
         NodeInput: null,
         NodeOutput: null,

@@ -27,6 +27,7 @@ export interface GravityPluginAPI {
     callService(method: string, params: any, context: any): Promise<any>;
     getRedisClient(): any;
     gravityPublish(channel: string, message: any): Promise<void>;
+    getAudioWebSocketManager?: () => any;
     classes: {
         PromiseNode: any;
         CallbackNode: any;
@@ -59,6 +60,7 @@ export interface PlatformDependencies {
     callService: (method: string, params: any, context: any) => Promise<any>;
     getRedisClient: () => any;
     gravityPublish: (channel: string, message: any) => Promise<void>;
+    getAudioWebSocketManager?: () => any;
     [key: string]: any;
 }
 export type NodeInputType = any;

@@ -33,6 +33,9 @@ export interface GravityPluginAPI {
   getRedisClient(): any; // For reading from Redis
   gravityPublish(channel: string, message: any): Promise<void>;
   
+  // Audio WebSocket support (optional)
+  getAudioWebSocketManager?: () => any;
+  
   // Base classes for extending
   classes: {
     PromiseNode: any;
@@ -75,6 +78,9 @@ export interface PlatformDependencies {
   callService: (method: string, params: any, context: any) => Promise<any>;
   getRedisClient: () => any; // For reading from Redis
   gravityPublish: (channel: string, message: any) => Promise<void>;
+  
+  // Audio WebSocket support (optional)
+  getAudioWebSocketManager?: () => any;
   
   // Allow additional properties for compatibility
   [key: string]: any;
@@ -186,6 +192,7 @@ export function initializePlatformFromAPI(api: GravityPluginAPI) {
     callService: api.callService,
     getRedisClient: api.getRedisClient,
     gravityPublish: api.gravityPublish,
+    getAudioWebSocketManager: api.getAudioWebSocketManager,
     // Type placeholders (not used at runtime)
     NodeInput: null,
     NodeOutput: null,
