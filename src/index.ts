@@ -36,6 +36,14 @@ export interface GravityPluginAPI {
   // Audio WebSocket support (optional)
   getAudioWebSocketManager?: () => any;
   
+  // Workflow execution utilities
+  executeNodeWithRouting?: (
+    executeNode: (inputs: any, config: any, context: any) => Promise<any>,
+    params: any,
+    config: any,
+    context: any
+  ) => Promise<any>;
+  
   // Base classes for extending
   classes: {
     PromiseNode: any;
@@ -78,6 +86,14 @@ export interface PlatformDependencies {
   callService: (method: string, params: any, context: any) => Promise<any>;
   getRedisClient: () => any; // For reading from Redis
   gravityPublish: (channel: string, message: any) => Promise<void>;
+  
+  // Workflow execution
+  executeNodeWithRouting?: (
+    executeNode: (inputs: any, config: any, context: any) => Promise<any>,
+    params: any,
+    config: any,
+    context: any
+  ) => Promise<any>;
   
   // Audio WebSocket support (optional)
   getAudioWebSocketManager?: () => any;
@@ -151,13 +167,14 @@ export function getPlatformDependencies(): PlatformDependencies {
         SINGLE: 'single',
         MULTIPLE: 'multiple'
       },
-      getNodeCredentials: () => Promise.resolve({}),
       getConfig: () => ({}),
       createLogger: () => ({ info: () => {}, error: () => {}, debug: () => {}, warn: () => {} }),
       saveTokenUsage: () => Promise.resolve(),
       callService: () => Promise.resolve(null),
       getRedisClient: () => null,
-      gravityPublish: () => Promise.resolve(),
+      gravityPublish: async () => {},
+      executeNodeWithRouting: async () => ({}),
+      getAudioWebSocketManager: () => null,
     } as any;
   }
   return platformDeps;
@@ -192,6 +209,7 @@ export function initializePlatformFromAPI(api: GravityPluginAPI) {
     callService: api.callService,
     getRedisClient: api.getRedisClient,
     gravityPublish: api.gravityPublish,
+    executeNodeWithRouting: api.executeNodeWithRouting,
     getAudioWebSocketManager: api.getAudioWebSocketManager,
     // Type placeholders (not used at runtime)
     NodeInput: null,

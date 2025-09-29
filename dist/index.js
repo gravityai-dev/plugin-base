@@ -73,13 +73,14 @@ function getPlatformDependencies() {
                 SINGLE: 'single',
                 MULTIPLE: 'multiple'
             },
-            getNodeCredentials: () => Promise.resolve({}),
             getConfig: () => ({}),
             createLogger: () => ({ info: () => { }, error: () => { }, debug: () => { }, warn: () => { } }),
             saveTokenUsage: () => Promise.resolve(),
             callService: () => Promise.resolve(null),
             getRedisClient: () => null,
-            gravityPublish: () => Promise.resolve(),
+            gravityPublish: async () => { },
+            executeNodeWithRouting: async () => ({}),
+            getAudioWebSocketManager: () => null,
         };
     }
     return platformDeps;
@@ -107,6 +108,7 @@ function initializePlatformFromAPI(api) {
         callService: api.callService,
         getRedisClient: api.getRedisClient,
         gravityPublish: api.gravityPublish,
+        executeNodeWithRouting: api.executeNodeWithRouting,
         getAudioWebSocketManager: api.getAudioWebSocketManager,
         // Type placeholders (not used at runtime)
         NodeInput: null,

@@ -28,6 +28,7 @@ export interface GravityPluginAPI {
     getRedisClient(): any;
     gravityPublish(channel: string, message: any): Promise<void>;
     getAudioWebSocketManager?: () => any;
+    executeNodeWithRouting?: (executeNode: (inputs: any, config: any, context: any) => Promise<any>, params: any, config: any, context: any) => Promise<any>;
     classes: {
         PromiseNode: any;
         CallbackNode: any;
@@ -60,6 +61,7 @@ export interface PlatformDependencies {
     callService: (method: string, params: any, context: any) => Promise<any>;
     getRedisClient: () => any;
     gravityPublish: (channel: string, message: any) => Promise<void>;
+    executeNodeWithRouting?: (executeNode: (inputs: any, config: any, context: any) => Promise<any>, params: any, config: any, context: any) => Promise<any>;
     getAudioWebSocketManager?: () => any;
     [key: string]: any;
 }
