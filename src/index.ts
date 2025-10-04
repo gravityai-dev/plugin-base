@@ -1,6 +1,6 @@
 /**
  * Unified Plugin Base and Platform Dependencies
- * 
+ *
  * This file combines plugin interfaces with platform dependencies,
  * eliminating redundancy across plugin packages.
  */
@@ -23,7 +23,7 @@ export interface GravityPluginAPI {
   registerNode(node: PluginNodeDefinition): void;
   registerService(name: string, service: any): void;
   registerCredential(credential: any): void;
-  
+
   // Platform utilities
   createLogger(name: string): any;
   getConfig(): any;
@@ -32,10 +32,10 @@ export interface GravityPluginAPI {
   callService(method: string, params: any, context: any): Promise<any>;
   getRedisClient(): any; // For reading from Redis
   gravityPublish(channel: string, message: any): Promise<void>;
-  
+
   // Audio WebSocket support (optional)
   getAudioWebSocketManager?: () => any;
-  
+
   // Workflow execution utilities
   executeNodeWithRouting?: (
     executeNode: (inputs: any, config: any, context: any) => Promise<any>,
@@ -43,13 +43,13 @@ export interface GravityPluginAPI {
     config: any,
     context: any
   ) => Promise<any>;
-  
+
   // Base classes for extending
   classes: {
     PromiseNode: any;
     CallbackNode: any;
   };
-  
+
   // Type definitions and enums
   types: {
     NodeInputType: any;
@@ -73,11 +73,11 @@ export interface PlatformDependencies {
   // Base classes
   PromiseNode: any;
   CallbackNode: any;
-  
+
   // Type enums
   NodeInputType: any;
   NodeConcurrency: any;
-  
+
   // Platform functions
   getNodeCredentials: (context: any, credentialName: string) => Promise<any>;
   getConfig: () => any;
@@ -86,7 +86,7 @@ export interface PlatformDependencies {
   callService: (method: string, params: any, context: any) => Promise<any>;
   getRedisClient: () => any; // For reading from Redis
   gravityPublish: (channel: string, message: any) => Promise<void>;
-  
+
   // Workflow execution
   executeNodeWithRouting?: (
     executeNode: (inputs: any, config: any, context: any) => Promise<any>,
@@ -94,10 +94,10 @@ export interface PlatformDependencies {
     config: any,
     context: any
   ) => Promise<any>;
-  
+
   // Audio WebSocket support (optional)
   getAudioWebSocketManager?: () => any;
-  
+
   // Allow additional properties for compatibility
   [key: string]: any;
 }
@@ -116,57 +116,110 @@ export type NodeCredential = any;
 export type NodeConcurrency = any;
 export type ValidationResult = any;
 
+// ============================================================================
+// DIRECT EXPORTS - Use these instead of getPlatformDependencies()
+// ============================================================================
+
+/**
+ * Base class for Promise-based nodes
+ * Import directly: import { PromiseNode } from "@gravityai-dev/plugin-base"
+ */
+export class PromiseNode {
+  nodeType = "stub";
+  logger: any = { info: () => {}, error: () => {}, debug: () => {} };
+  
+  constructor(name: string) {}
+  
+  protected validateConfig(config: any) {
+    return { success: true };
+  }
+  
+  protected executeNode(inputs: any, config: any, context: any) {
+    return {};
+  }
+  
+  protected validateAndGetContext(context: any) {
+    return { workflowId: "", executionId: "", nodeId: "" };
+  }
+  
+  protected getExecutionContext(context: any) {
+    return {
+      workflowId: "",
+      executionId: "",
+      nodeId: "",
+      nodeType: "",
+      config: {},
+      credentials: {},
+    };
+  }
+  
+  async execute(inputs: any, config: any, context: any): Promise<any> {
+    return this.executeNode(inputs, config, context);
+  }
+}
+
+/**
+ * Base class for Callback-based nodes
+ * Import directly: import { CallbackNode } from "@gravityai-dev/plugin-base"
+ */
+export class CallbackNode {
+  constructor(name: string) {}
+}
+
+/**
+ * Node input type enum
+ * Import directly: import { NodeInputType } from "@gravityai-dev/plugin-base"
+ */
+export const NodeInputType = {
+  STRING: "string",
+  OBJECT: "object",
+  ARRAY: "array",
+  NUMBER: "number",
+  BOOLEAN: "boolean",
+};
+
+/**
+ * Node concurrency enum
+ * Import directly: import { NodeConcurrency } from "@gravityai-dev/plugin-base"
+ */
+export const NodeConcurrency = {
+  SINGLE: "single",
+  MULTIPLE: "multiple",
+};
 
 // Global platform instance
 let platformDeps: PlatformDependencies | null = null;
 
 /**
  * Set platform dependencies (called by plugin setup)
+ * ONLY THE FIRST CALL IS ACCEPTED - prevents overwriting
  */
 export function setPlatformDependencies(deps: PlatformDependencies) {
+  // Only set once - first plugin wins
+  if (platformDeps !== null) {
+    return; // Already set, ignore
+  }
   platformDeps = deps;
 }
 
 /**
- * Get platform dependencies (used by internal code)
+ * DEPRECATED - Use direct imports for base classes and context.api for runtime functions
+ * @deprecated Will be removed in next major version
  */
 export function getPlatformDependencies(): PlatformDependencies {
+  // This function is only kept for backward compatibility
+  // New code should:
+  // 1. Import base classes directly: import { PromiseNode } from "@gravityai-dev/plugin-base"
+  // 2. Use context.api for runtime functions: context.api.createLogger(), context.api.gravityPublish()
+  
   if (!platformDeps) {
     // Return stub implementations that won't crash at module load
     return {
-    packageVersion: "1.0.26",
-      PromiseNode: class {
-        constructor(name: string) {}
-        protected validateConfig(config: any) { return { success: true }; }
-        protected executeNode(inputs: any, config: any, context: any) { return {}; }
-        protected validateAndGetContext(context: any) { return { workflowId: '', executionId: '', nodeId: '' }; }
-        protected getExecutionContext(context: any) { 
-          return { 
-            workflowId: '', 
-            executionId: '', 
-            nodeId: '', 
-            nodeType: '', 
-            config: {}, 
-            credentials: {} 
-          }; 
-        }
-        nodeType = 'stub';
-        logger = { info: () => {}, error: () => {}, debug: () => {} };
-      },
-      CallbackNode: class {
-        constructor(name: string) {}
-      },
-      NodeInputType: {
-        STRING: 'string',
-        OBJECT: 'object',
-        ARRAY: 'array',
-        NUMBER: 'number',
-        BOOLEAN: 'boolean'
-      },
-      NodeConcurrency: {
-        SINGLE: 'single',
-        MULTIPLE: 'multiple'
-      },
+      packageVersion: "1.0.29",
+      PromiseNode,
+      CallbackNode,
+      NodeInputType,
+      NodeConcurrency,
       getConfig: () => ({}),
       createLogger: () => ({ info: () => {}, error: () => {}, debug: () => {}, warn: () => {} }),
       saveTokenUsage: () => Promise.resolve(),

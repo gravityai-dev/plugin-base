@@ -78,11 +78,66 @@ export type NodeCredential = any;
 export type NodeConcurrency = any;
 export type ValidationResult = any;
 /**
+ * Base class for Promise-based nodes
+ * Import directly: import { PromiseNode } from "@gravityai-dev/plugin-base"
+ */
+export declare class PromiseNode {
+    nodeType: string;
+    logger: any;
+    constructor(name: string);
+    protected validateConfig(config: any): {
+        success: boolean;
+    };
+    protected executeNode(inputs: any, config: any, context: any): {};
+    protected validateAndGetContext(context: any): {
+        workflowId: string;
+        executionId: string;
+        nodeId: string;
+    };
+    protected getExecutionContext(context: any): {
+        workflowId: string;
+        executionId: string;
+        nodeId: string;
+        nodeType: string;
+        config: {};
+        credentials: {};
+    };
+    execute(inputs: any, config: any, context: any): Promise<any>;
+}
+/**
+ * Base class for Callback-based nodes
+ * Import directly: import { CallbackNode } from "@gravityai-dev/plugin-base"
+ */
+export declare class CallbackNode {
+    constructor(name: string);
+}
+/**
+ * Node input type enum
+ * Import directly: import { NodeInputType } from "@gravityai-dev/plugin-base"
+ */
+export declare const NodeInputType: {
+    STRING: string;
+    OBJECT: string;
+    ARRAY: string;
+    NUMBER: string;
+    BOOLEAN: string;
+};
+/**
+ * Node concurrency enum
+ * Import directly: import { NodeConcurrency } from "@gravityai-dev/plugin-base"
+ */
+export declare const NodeConcurrency: {
+    SINGLE: string;
+    MULTIPLE: string;
+};
+/**
  * Set platform dependencies (called by plugin setup)
+ * ONLY THE FIRST CALL IS ACCEPTED - prevents overwriting
  */
 export declare function setPlatformDependencies(deps: PlatformDependencies): void;
 /**
- * Get platform dependencies (used by internal code)
+ * DEPRECATED - Use direct imports for base classes and context.api for runtime functions
+ * @deprecated Will be removed in next major version
  */
 export declare function getPlatformDependencies(): PlatformDependencies;
 /**
