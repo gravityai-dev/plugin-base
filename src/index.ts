@@ -23,6 +23,7 @@ export interface GravityPluginAPI {
   registerNode(node: PluginNodeDefinition): void;
   registerService(name: string, service: any): void;
   registerCredential(credential: any): void;
+  registerComponentPath?(packagePath: string): void;
 
   // Platform utilities
   createLogger(name: string): any;
@@ -35,6 +36,9 @@ export interface GravityPluginAPI {
 
   // Audio WebSocket support (optional)
   getAudioWebSocketManager?: () => any;
+
+  // WebSocket manager for AI components
+  getWebSocketManager?: () => any;
 
   // Workflow execution utilities
   executeNodeWithRouting?: (
@@ -113,7 +117,6 @@ export type NodeLifecycle = any;
 export type WorkflowNode = any;
 export type EnhancedNodeDefinition = any;
 export type NodeCredential = any;
-export type NodeConcurrency = any;
 export type ValidationResult = any;
 
 // ============================================================================
@@ -127,21 +130,21 @@ export type ValidationResult = any;
 export class PromiseNode {
   nodeType = "stub";
   logger: any = { info: () => {}, error: () => {}, debug: () => {} };
-  
+
   constructor(name: string) {}
-  
-  protected validateConfig(config: any) {
+
+  protected async validateConfig(config: any): Promise<any> {
     return { success: true };
   }
-  
-  protected executeNode(inputs: any, config: any, context: any) {
+
+  protected async executeNode(inputs: any, config: any, context: any): Promise<any> {
     return {};
   }
-  
+
   protected validateAndGetContext(context: any) {
     return { workflowId: "", executionId: "", nodeId: "" };
   }
-  
+
   protected getExecutionContext(context: any) {
     return {
       workflowId: "",
@@ -152,7 +155,7 @@ export class PromiseNode {
       credentials: {},
     };
   }
-  
+
   async execute(inputs: any, config: any, context: any): Promise<any> {
     return this.executeNode(inputs, config, context);
   }
@@ -178,14 +181,8 @@ export const NodeInputType = {
   BOOLEAN: "boolean",
 };
 
-/**
- * Node concurrency enum
- * Import directly: import { NodeConcurrency } from "@gravityai-dev/plugin-base"
- */
-export const NodeConcurrency = {
-  SINGLE: "single",
-  MULTIPLE: "multiple",
-};
+// NodeConcurrency is exported from ./types with proper enum values:
+// SEQUENTIAL, LOW, MEDIUM, HIGH, UNLIMITED
 
 // Global platform instance
 let platformDeps: PlatformDependencies | null = null;
@@ -211,15 +208,15 @@ export function getPlatformDependencies(): PlatformDependencies {
   // New code should:
   // 1. Import base classes directly: import { PromiseNode } from "@gravityai-dev/plugin-base"
   // 2. Use context.api for runtime functions: context.api.createLogger(), context.api.gravityPublish()
-  
+
   if (!platformDeps) {
     // Return stub implementations that won't crash at module load
     return {
-      packageVersion: "1.0.29",
+      packageVersion: "1.0.30",
       PromiseNode,
       CallbackNode,
       NodeInputType,
-      NodeConcurrency,
+      NodeConcurrency: {}, // Legacy stub
       getConfig: () => ({}),
       createLogger: () => ({ info: () => {}, error: () => {}, debug: () => {}, warn: () => {} }),
       saveTokenUsage: () => Promise.resolve(),
@@ -283,3 +280,11 @@ export * from "./types";
 
 // Export shared credentials
 export * from "./credentials";
+
+// Channel constants (previously from @gravityai-dev/gravity-server)
+export const SYSTEM_CHANNEL = "gravity:system";
+export const AI_RESULT_CHANNEL = "gravity:output";
+export const QUERY_MESSAGE_CHANNEL = "gravity:query";
+export const INTERNAL_REQUEST_CHANNEL = "gravity:internal";
+export const WORKFLOW_EXECUTION_CHANNEL = "workflow:execution";
+export const WORKFLOW_STATE_CHANNEL = "gravity:workflow:state";

@@ -103,6 +103,12 @@ export enum NodeExecutionMode {
 export interface EnhancedNodeDefinition extends NodeDefinition {
   type: string;
   logoUrl?: string;
+  template?: "standard" | "service" | "mini" | "uiComponent";
+  componentTemplate?: {
+    html: string;
+    css: string;
+    tokens: Record<string, string>;
+  };
   configSchema?: any;
   credentials?: NodeCredential[];
   capabilities?: {

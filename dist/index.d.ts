@@ -20,6 +20,7 @@ export interface GravityPluginAPI {
     registerNode(node: PluginNodeDefinition): void;
     registerService(name: string, service: any): void;
     registerCredential(credential: any): void;
+    registerComponentPath?(packagePath: string): void;
     createLogger(name: string): any;
     getConfig(): any;
     saveTokenUsage(usage: any): Promise<void>;
@@ -28,6 +29,7 @@ export interface GravityPluginAPI {
     getRedisClient(): any;
     gravityPublish(channel: string, message: any): Promise<void>;
     getAudioWebSocketManager?: () => any;
+    getWebSocketManager?: () => any;
     executeNodeWithRouting?: (executeNode: (inputs: any, config: any, context: any) => Promise<any>, params: any, config: any, context: any) => Promise<any>;
     classes: {
         PromiseNode: any;
@@ -75,7 +77,6 @@ export type NodeLifecycle = any;
 export type WorkflowNode = any;
 export type EnhancedNodeDefinition = any;
 export type NodeCredential = any;
-export type NodeConcurrency = any;
 export type ValidationResult = any;
 /**
  * Base class for Promise-based nodes
@@ -85,10 +86,8 @@ export declare class PromiseNode {
     nodeType: string;
     logger: any;
     constructor(name: string);
-    protected validateConfig(config: any): {
-        success: boolean;
-    };
-    protected executeNode(inputs: any, config: any, context: any): {};
+    protected validateConfig(config: any): Promise<any>;
+    protected executeNode(inputs: any, config: any, context: any): Promise<any>;
     protected validateAndGetContext(context: any): {
         workflowId: string;
         executionId: string;
@@ -123,14 +122,6 @@ export declare const NodeInputType: {
     BOOLEAN: string;
 };
 /**
- * Node concurrency enum
- * Import directly: import { NodeConcurrency } from "@gravityai-dev/plugin-base"
- */
-export declare const NodeConcurrency: {
-    SINGLE: string;
-    MULTIPLE: string;
-};
-/**
  * Set platform dependencies (called by plugin setup)
  * ONLY THE FIRST CALL IS ACCEPTED - prevents overwriting
  */
@@ -155,4 +146,10 @@ export declare function createPlugin(config: {
 export declare function initializePlatformFromAPI(api: GravityPluginAPI): void;
 export * from "./types";
 export * from "./credentials";
+export declare const SYSTEM_CHANNEL = "gravity:system";
+export declare const AI_RESULT_CHANNEL = "gravity:output";
+export declare const QUERY_MESSAGE_CHANNEL = "gravity:query";
+export declare const INTERNAL_REQUEST_CHANNEL = "gravity:internal";
+export declare const WORKFLOW_EXECUTION_CHANNEL = "workflow:execution";
+export declare const WORKFLOW_STATE_CHANNEL = "gravity:workflow:state";
 //# sourceMappingURL=index.d.ts.map

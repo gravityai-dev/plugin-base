@@ -20,7 +20,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NodeConcurrency = exports.NodeInputType = exports.CallbackNode = exports.PromiseNode = void 0;
+exports.WORKFLOW_STATE_CHANNEL = exports.WORKFLOW_EXECUTION_CHANNEL = exports.INTERNAL_REQUEST_CHANNEL = exports.QUERY_MESSAGE_CHANNEL = exports.AI_RESULT_CHANNEL = exports.SYSTEM_CHANNEL = exports.NodeInputType = exports.CallbackNode = exports.PromiseNode = void 0;
 exports.setPlatformDependencies = setPlatformDependencies;
 exports.getPlatformDependencies = getPlatformDependencies;
 exports.createPlugin = createPlugin;
@@ -37,10 +37,10 @@ class PromiseNode {
         this.nodeType = "stub";
         this.logger = { info: () => { }, error: () => { }, debug: () => { } };
     }
-    validateConfig(config) {
+    async validateConfig(config) {
         return { success: true };
     }
-    executeNode(inputs, config, context) {
+    async executeNode(inputs, config, context) {
         return {};
     }
     validateAndGetContext(context) {
@@ -80,14 +80,8 @@ exports.NodeInputType = {
     NUMBER: "number",
     BOOLEAN: "boolean",
 };
-/**
- * Node concurrency enum
- * Import directly: import { NodeConcurrency } from "@gravityai-dev/plugin-base"
- */
-exports.NodeConcurrency = {
-    SINGLE: "single",
-    MULTIPLE: "multiple",
-};
+// NodeConcurrency is exported from ./types with proper enum values:
+// SEQUENTIAL, LOW, MEDIUM, HIGH, UNLIMITED
 // Global platform instance
 let platformDeps = null;
 /**
@@ -113,11 +107,11 @@ function getPlatformDependencies() {
     if (!platformDeps) {
         // Return stub implementations that won't crash at module load
         return {
-            packageVersion: "1.0.29",
+            packageVersion: "1.0.30",
             PromiseNode,
             CallbackNode,
             NodeInputType: exports.NodeInputType,
-            NodeConcurrency: exports.NodeConcurrency,
+            NodeConcurrency: {}, // Legacy stub
             getConfig: () => ({}),
             createLogger: () => ({ info: () => { }, error: () => { }, debug: () => { }, warn: () => { } }),
             saveTokenUsage: () => Promise.resolve(),
@@ -172,4 +166,11 @@ function initializePlatformFromAPI(api) {
 __exportStar(require("./types"), exports);
 // Export shared credentials
 __exportStar(require("./credentials"), exports);
+// Channel constants (previously from @gravityai-dev/gravity-server)
+exports.SYSTEM_CHANNEL = "gravity:system";
+exports.AI_RESULT_CHANNEL = "gravity:output";
+exports.QUERY_MESSAGE_CHANNEL = "gravity:query";
+exports.INTERNAL_REQUEST_CHANNEL = "gravity:internal";
+exports.WORKFLOW_EXECUTION_CHANNEL = "workflow:execution";
+exports.WORKFLOW_STATE_CHANNEL = "gravity:workflow:state";
 //# sourceMappingURL=index.js.map
