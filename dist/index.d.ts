@@ -4,6 +4,7 @@
  * This file combines plugin interfaces with platform dependencies,
  * eliminating redundancy across plugin packages.
  */
+import type { MCPTraceInput } from "./types";
 /**
  * Plugin interface that packages must implement
  */
@@ -24,6 +25,7 @@ export interface GravityPluginAPI {
     createLogger(name: string): any;
     getConfig(): any;
     saveTokenUsage(usage: any): Promise<void>;
+    saveMCPTrace(trace: MCPTraceInput): Promise<string>;
     getNodeCredentials(context: any, credentialName: string): Promise<any>;
     callService(method: string, params: any, context: any): Promise<any>;
     getRedisClient(): any;

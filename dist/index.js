@@ -107,7 +107,7 @@ function getPlatformDependencies() {
     if (!platformDeps) {
         // Return stub implementations that won't crash at module load
         return {
-            packageVersion: "1.0.30",
+            packageVersion: "1.1.0",
             PromiseNode,
             CallbackNode,
             NodeInputType: exports.NodeInputType,
@@ -115,6 +115,7 @@ function getPlatformDependencies() {
             getConfig: () => ({}),
             createLogger: () => ({ info: () => { }, error: () => { }, debug: () => { }, warn: () => { } }),
             saveTokenUsage: () => Promise.resolve(),
+            saveMCPTrace: () => Promise.resolve(),
             callService: () => Promise.resolve(null),
             getRedisClient: () => null,
             gravityPublish: async () => { },
@@ -144,6 +145,7 @@ function initializePlatformFromAPI(api) {
         getConfig: api.getConfig,
         createLogger: api.createLogger,
         saveTokenUsage: api.saveTokenUsage,
+        saveMCPTrace: api.saveMCPTrace,
         callService: api.callService,
         getRedisClient: api.getRedisClient,
         gravityPublish: api.gravityPublish,

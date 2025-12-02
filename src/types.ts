@@ -168,6 +168,20 @@ export interface WorkflowNode {
   lifecycle?: NodeLifecycle;
 }
 
+// MCP trace input interface
+export interface MCPTraceInput {
+  executionId: string;
+  parentNodeId: string;
+  toolName: string;
+  arguments: any;
+  result: any;
+  startTime: number;
+  endTime: number;
+  duration: number;
+  success: boolean;
+  error?: string;
+}
+
 // Token usage tracking interface
 export interface TokenUsage {
   workflowId: string;

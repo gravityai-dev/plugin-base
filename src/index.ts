@@ -5,6 +5,8 @@
  * eliminating redundancy across plugin packages.
  */
 
+import type { MCPTraceInput } from "./types";
+
 /**
  * Plugin interface that packages must implement
  */
@@ -29,6 +31,7 @@ export interface GravityPluginAPI {
   createLogger(name: string): any;
   getConfig(): any;
   saveTokenUsage(usage: any): Promise<void>;
+  saveMCPTrace(trace: MCPTraceInput): Promise<string>;
   getNodeCredentials(context: any, credentialName: string): Promise<any>;
   callService(method: string, params: any, context: any): Promise<any>;
   getRedisClient(): any; // For reading from Redis
@@ -212,7 +215,7 @@ export function getPlatformDependencies(): PlatformDependencies {
   if (!platformDeps) {
     // Return stub implementations that won't crash at module load
     return {
-      packageVersion: "1.0.30",
+      packageVersion: "1.1.0",
       PromiseNode,
       CallbackNode,
       NodeInputType,
@@ -220,6 +223,7 @@ export function getPlatformDependencies(): PlatformDependencies {
       getConfig: () => ({}),
       createLogger: () => ({ info: () => {}, error: () => {}, debug: () => {}, warn: () => {} }),
       saveTokenUsage: () => Promise.resolve(),
+      saveMCPTrace: () => Promise.resolve(),
       callService: () => Promise.resolve(null),
       getRedisClient: () => null,
       gravityPublish: async () => {},
@@ -256,6 +260,7 @@ export function initializePlatformFromAPI(api: GravityPluginAPI) {
     getConfig: api.getConfig,
     createLogger: api.createLogger,
     saveTokenUsage: api.saveTokenUsage,
+    saveMCPTrace: api.saveMCPTrace,
     callService: api.callService,
     getRedisClient: api.getRedisClient,
     gravityPublish: api.gravityPublish,
