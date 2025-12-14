@@ -107,7 +107,7 @@ function getPlatformDependencies() {
     if (!platformDeps) {
         // Return stub implementations that won't crash at module load
         return {
-            packageVersion: "1.1.0",
+            packageVersion: "1.1.1",
             PromiseNode,
             CallbackNode,
             NodeInputType: exports.NodeInputType,
